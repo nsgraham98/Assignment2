@@ -1,0 +1,154 @@
+﻿@page "/flights"
+
+<style>
+    .maincontent
+    {
+        margin:0;
+        display: flex;
+        flex-wrap:wrap;
+    }
+    .maincontent > div
+    {
+        flex-grow:1;
+    }
+    .maincontent > div:nth-child(3)
+    {
+/*         background-color:lightblue; */
+        width:100%;
+
+    }
+    .maincontent > div:nth-child(2)
+    {
+        text-align:right;
+        position:relative;
+        margin-right:0;
+/*         background-color:lightcoral; */
+    }
+    .maincontent > div:nth-child(1)
+    {
+/*         background-color:lightyellow; */
+    }
+    .maincontent div:nth-child(2) > input
+    {
+        margin-right:0;
+        margin:auto;
+    }
+   
+    h3
+    {
+        text-align:center;
+    }
+
+    .reserve
+    {
+        display: flex;
+        flex-direction: row;
+        justify-content:flex-end;
+        align-items: flex-end;
+    }
+    .reserve > form > button
+    {
+        display:block;
+        margin:auto;
+        margin-left:53%;
+        margin-top:1em;
+        background-color:royalblue;
+        color:white;
+        border-radius:5px;
+    }
+    .reserve > form > input
+    {
+        border-radius:5px;
+        width:300px;
+    }
+    
+    .flightfinder
+    {
+        text-align:right;
+        margin:50px;
+    }
+    .flightfinder > form > div > select
+    {
+        width:85%;
+        border-radius:5px;
+    }
+
+    .flightfinder > form > button {
+        display: block;
+        margin: auto;
+        margin-top: 1em;
+        background-color: royalblue;
+        color: white;
+        border-radius:5px;
+    }
+
+
+</style>
+<div class="maincontent">
+
+        <div class="flights">
+            <h3>Flights</h3>
+            <p>Flight 1</p>
+            <p>Flight 2</p>
+        </div>
+
+        <div class="reserve">    
+            <form>
+                <h3>Reserve</h3>
+                <label for="flight">Flight:</label>
+                <input type="text" name="flight"/><br />
+
+                <label for="airline">Airline:</label>
+                <input type="text" name="airline" /><br />
+
+                <label for="day">Day:</label>
+                <input type="text" name="day" /><br />
+
+                <label for="time">Time:</label>
+                <input type="text" name="time" /><br />
+
+                <label for="cost">Cost:</label>
+                <input type="text" name="cost" /><br />
+
+                <label for="name">Name:</label>
+                <input type="text" name="name" /><br />
+
+                <label for="citizenship">Citizenship:</label>
+                <input type="text" name="citizenship" /><br />
+
+                <button>Reserve</button>
+            </form>            
+        </div>
+    <div class="flightfinder">
+        <h3>Flight Finder</h3><br />
+        <form>
+            <div>
+                <label for="from">From:</label>
+                <select name="from">
+                    <option value="yyc">YYC</option>
+                </select><br />
+            </div>
+
+            <div>
+                <label for="to">To:</label>
+                <select name="to">
+                    <option value="yyc">YYC</option>
+                </select><br />
+            </div>
+
+            <div>
+                <label for="day">Day:</label>
+                <select name="day">
+                    <option value="any">Any</option>
+                </select><br />
+            </div>
+
+            <button>Find Flights</button>
+        </form>
+    </div>
+</div>
+
+
+@code {
+
+}
