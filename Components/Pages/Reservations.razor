@@ -1,4 +1,5 @@
 ﻿@page "/reservations"
+@using Assignment2
 
 <style>
     .maincontent
@@ -87,63 +88,89 @@
         border-radius:5px;
     }
 </style>
+
 <div class="maincontent">
         <div class="reservations">
             <h3>Reservations</h3>
-            <p>Flight 1</p>
-            <p>Flight 2</p>
+            @foreach(Reservation res in foundResList)
+            {
+                <p>@Reservation.DisplayReservation(res)</p>
+            }
+        }
         </div>
 
         <div class="reserve">
             <form>
                 <h3>Reserve</h3>
                 <label for="code">Code:</label>
-                <input type="text" name="code" /><br />
+                <input type="text" name="code" value="@reservationCode" /><br />
 
                 <label for="flight">Flight:</label>
-                <input type="text" name="flight"/><br />
+            <input type="text" name="flight" @bind="@flightCode" /><br />
 
                 <label for="airline">Airline:</label>
-                <input type="text" name="airline" /><br />
+            <input type="text" name="airline" @bind="@airlineName" /><br />
 
                 <label for="cost">Cost:</label>
-                <input type="text" name="cost" /><br />
+            <input type="number" name="cost" @bind="@cost" /><br />
 
                 <label for="name">Name:</label>
-                <input type="text" name="name" /><br />
+                <input type="text" name="name" @bind="@customerName" /><br />
 
                 <label for="citizenship">Citizenship:</label>
-                <input type="text" name="citizenship" /><br />
+                <input type="text" name="citizenship" @bind="@citizenship"/><br />
 
                 <label for="status">Status:</label>
-                <select name="status">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+            <select name="status" @bind="@status">
+                    <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
                 </select>
 
-                <button>Reserve</button>
+            <button type="submit" @onclick="PassModifyReservation">Reserve</button>
             </form>            
         </div>
     <div class="flightfinder">
-        <h3>Flight Finder</h3>
+        <h3>Reservation Finder</h3>
         <form>
             <div>
                 <label for="code">Code:</label>
-                <input type="text" name="code" /><br />
+                <input type="text" name="code" @bind="reservationCodeFind"/><br />
             </div>
             <div>
                 <label for="airline">Airline:</label>
-                <input type="text" name="airline" /><br />
+                <input type="text" name="airline" @bind="airlineNameFind"/><br />
             </div>
             <div>
                 <label for="name">Name:</label>
-                <input type="text" name="name" /><br />
+                <input type="text" name="name" @bind="customerNameFind"/><br />
             </div>
 
-            <button>Find Reservations</button>
+            <button type="button" @onclick="PassReservationFinder">Find Reservations</button>
         </form>
     </div>
 </div>
 @code {
+    private string reservationCode { get; set; }
+    private string flightCode { get; set; }
+    private string airlineName { get; set; }
+    private double cost { get; set; }
+    private string customerName { get; set; }
+    private string citizenship { get; set; }
+    private string status { get; set; }
 
+    private string reservationCodeFind { get; set; }
+    private string airlineNameFind { get; set; }
+    private string customerNameFind { get; set; }
+    private List<Reservation> foundResList { get; set; } = new List<Reservation>();
+
+    private void PassModifyReservation()
+    {
+        ReservationManager.ModifyReservation(reservationCode, customerName, citizenship, status);        
+    }
+
+    private void PassReservationFinder()
+    {
+        foundResList = ReservationManager.FindReservation(reservationCodeFind, airlineNameFind, customerNameFind);        
+    }
 }
+
