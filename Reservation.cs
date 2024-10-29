@@ -36,7 +36,7 @@ namespace Assignment2
         }
         public static string DisplayReservation(Reservation r)
         {
-            return $"Reservation Code: {r.ReservationCode}, Flight Code: {r.Flight.FlightCode}, Airline: {r.Flight.AirlineName}, Departure: {r.Flight.OriginAirport.AirportCode}, Destination: {r.Flight.DestAirport.AirportCode}, Day: {r.Flight.WeekDate}, Time: {r.Flight.Time}, Price: {r.Flight.Cost}, Customer Name: {r.CustomerName}, Citizenship: {r.Citizenship}, Status: {r.Status}";
+            return $"Reservation Code: {r.ReservationCode}, Flight Code: {r.Flight.FlightCode}, Airline: {r.Flight.AirlineName}, Departure: {r.Flight.OriginAirport.AirportCode}, Destination: {r.Flight.DestAirport.AirportCode}, Day: {r.Flight.WeekDate}, Time: {r.Flight.Time}, Seats: {r.Flight.Seats}, Price: {r.Flight.Cost}, Customer Name: {r.CustomerName}, Citizenship: {r.Citizenship}, Status: {r.Status}";
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Assignment2
 
         public Flight()
         {
-            Flight flight = new Flight();
+            //Flight flight = new Flight();
         }
 
         public Flight(string flightCode, string airlineName, Airport originAirport, Airport destAirport, string weekDate, string time, int seats, double cost)
@@ -63,32 +63,41 @@ namespace Assignment2
         // loads flights to list from an embedded (properties -> build action -> Embedded Resource) .csv file located in Resources/res/flights.csv
         public static List<Flight> LoadFlights()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "Assignment2.Resources.res.flights.csv";
-            Stream stream = assembly.GetManifestResourceStream(resourceName);
-            StreamReader reader = new StreamReader(stream);
-            List<Flight> flightsList = new List<Flight>();
-
-            while (!reader.EndOfStream)
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDirectory, @"Resources\res\flights.csv");
+            using (StreamReader reader = new StreamReader(filePath))
             {
-                string line = reader.ReadLine();
-                string[] field = line.Split(",");
-                Airport originAirport = Airport.LoadAirportFromCode(field[2]);
-                Airport destAirport = Airport.LoadAirportFromCode(field[3]);
-                Flight flight = new Flight(field[0], field[1], originAirport, destAirport, field[4], field[5], Convert.ToInt16(field[6]), Convert.ToDouble(field[7]));
-                flightsList.Add(flight);
+                List<Flight> flightsList = new List<Flight>();
+
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] field = line.Split(",");
+                    Airport originAirport = Airport.LoadAirportFromCode(field[2]);
+                    Airport destAirport = Airport.LoadAirportFromCode(field[3]);
+                    Flight flight = new Flight(field[0], field[1], originAirport, destAirport, field[4], field[5], Convert.ToInt16(field[6]), Convert.ToDouble(field[7]));
+                    flightsList.Add(flight);
+                }
+                return flightsList;
             }
-            return flightsList;
         }
 
         // accepts string flightcode as argument, returns matching Flight object
         public static Flight GetFlightFromCode(string flightcode)
         {
-            List<Flight> list = LoadFlights();
-            foreach (Flight flight in list)
+            if (flightcode != null)
             {
-                if (flightcode == flight.FlightCode)
-                { return flight; }
+                List<Flight> list = LoadFlights();
+                foreach (Flight flight in list)
+                {
+                    if (flightcode == flight.FlightCode)
+                    { return flight; }
+                }
+            }
+            else
+            {
+                Flight noMatchFlightNull = new Flight();
+                return noMatchFlightNull;
             }
             Flight noMatchFlight = new Flight();
             return noMatchFlight;

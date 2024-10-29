@@ -26,20 +26,21 @@ namespace Assignment2
         // loads airports to list from an embedded (properties -> build action -> Embedded Resource) .csv file located in Resources/res/airports.csv
         public static List<Airport> LoadAirports()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "Assignment2.Resources.res.airports.csv";
-            Stream stream = assembly.GetManifestResourceStream(resourceName);
-            StreamReader reader = new StreamReader(stream);
-            List<Airport> airportsList = new List<Airport>();
-
-            while (!reader.EndOfStream)
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDirectory, @"Resources\res\airports.csv");
+            using (StreamReader reader = new StreamReader(filePath))
             {
-                string line = reader.ReadLine();
-                string[] field = line.Split(',');
-                Airport airport = new Airport(field[0], field[1]);
-                airportsList.Add(airport);
-            }     
-            return airportsList;
+                List<Airport> airportsList = new List<Airport>();
+
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] field = line.Split(',');
+                    Airport airport = new Airport(field[0], field[1]);
+                    airportsList.Add(airport);
+                }
+                return airportsList;
+            }
         }
 
         // accepts string airportCode as argument, returns matching Airport object

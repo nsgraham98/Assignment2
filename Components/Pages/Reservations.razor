@@ -96,14 +96,14 @@
             {
                 <p>@Reservation.DisplayReservation(res)</p>
             }
-        }
+        
         </div>
 
         <div class="reserve">
             <form>
-                <h3>Reserve</h3>
+                <h3>Update Reservation</h3>
                 <label for="code">Code:</label>
-                <input type="text" name="code" value="@reservationCode" /><br />
+                <input type="text" name="code" @bind="@reservationCode" /><br />
 
                 <label for="flight">Flight:</label>
             <input type="text" name="flight" @bind="@flightCode" /><br />
@@ -126,7 +126,7 @@
                 <option value="Inactive">Inactive</option>
                 </select>
 
-            <button type="submit" @onclick="PassModifyReservation">Reserve</button>
+            <button type="submit" @onclick="PassModifyReservation">Update</button>
             </form>            
         </div>
     <div class="flightfinder">
@@ -156,7 +156,7 @@
     private double cost { get; set; }
     private string customerName { get; set; }
     private string citizenship { get; set; }
-    private string status { get; set; }
+    private string status { get; set; } = "active";
 
     private string reservationCodeFind { get; set; }
     private string airlineNameFind { get; set; }
@@ -172,5 +172,24 @@
     {
         foundResList = ReservationManager.FindReservation(reservationCodeFind, airlineNameFind, customerNameFind);        
     }
+
+    // private void PassUpdateFields(ChangeEventArgs e)
+    // {
+    //     flightCode = e.Value.ToString();
+    //     UpdateFields();
+    // }
+
+    // private void UpdateFields()
+    // {
+    //     Reservation foundResPop = Reservation.FindReservation(flightCode, "", "");
+    //     if (foundFlightPop != null)
+    //     {
+    //         flightCode = found
+    //         airlineName = foundFlightPop.AirlineName;
+    //         weekDate = foundFlightPop.WeekDate;
+    //         time = foundFlightPop.Time;
+    //         cost = foundFlightPop.Cost;
+    //     }
+    // }
 }
 

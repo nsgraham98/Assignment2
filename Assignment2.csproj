@@ -60,14 +60,16 @@
     <ItemGroup>
       <None Remove="Resources\res\airports.csv" />
       <None Remove="Resources\res\flights.csv" />
-      <None Remove="Resources\res\reservations.csv" />
       <None Remove="Resources\Styles.css" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Resources\res\airports.csv" />
-      <EmbeddedResource Include="Resources\res\flights.csv" />
-      <EmbeddedResource Include="Resources\res\reservations.csv" />
+      <EmbeddedResource Include="Resources\res\airports.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Resources\res\flights.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -99,6 +101,12 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Resources\res\reservations.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

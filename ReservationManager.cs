@@ -53,24 +53,28 @@ namespace Assignment2
         // loads reservations to list from .csv file located in Resources/res/reservations.csv
         public static List<Reservation> LoadReservations()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "Assignment2.Resources.res.reservations.csv";
-            Stream stream = assembly.GetManifestResourceStream(resourceName);
-            StreamReader reader = new StreamReader(stream);
-            List<Reservation> reservationsList = new List<Reservation>();
-
-            while (!reader.EndOfStream)
+            //Assembly assembly = Assembly.GetExecutingAssembly();
+            //string resourceName = "Assignment2.Resources.res.reservations.csv";
+            //Stream stream = assembly.GetManifestResourceStream(resourceName);
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDirectory, @"Resources\res\reservations.csv");
+            using (StreamReader reader = new StreamReader(filePath))
             {
-                string line = reader.ReadLine();
-                string[] field = line.Split(",");
-                Airport originAirport = Airport.LoadAirportFromCode(field[2]);
-                Airport destAirport = Airport.LoadAirportFromCode(field[3]);
-                Flight flight = new Flight(field[1], field[2], originAirport, destAirport, field[5], field[6], Convert.ToInt16(field[7]), Convert.ToDouble(field[8]));
+                List<Reservation> reservationsList = new List<Reservation>();
 
-                Reservation reservation = new Reservation(field[0], flight, field[9], field[10], (field[11]));
-                reservationsList.Add(reservation);
-            }     
-            return reservationsList;
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] field = line.Split(",");
+                    Airport originAirport = Airport.LoadAirportFromCode(field[3]);
+                    Airport destAirport = Airport.LoadAirportFromCode(field[4]);
+                    Flight flight = new Flight(field[1], field[2], originAirport, destAirport, field[5], field[6], Convert.ToInt16(field[7]), Convert.ToDouble(field[8]));
+
+                    Reservation reservation = new Reservation(field[0], flight, field[9], field[10], (field[11]));
+                    reservationsList.Add(reservation);
+                }
+                return reservationsList;
+            }
         }
         //string path = "..\\..\\..\\..\\Resources\\res\\reservations.csv";
         //List<Reservation> list = new List<Reservation>();
@@ -116,21 +120,25 @@ namespace Assignment2
                     {
                         resEntry.Citizenship = citizenship;
                     }
-                    resList.Add (resEntry);
+                    resList.Add(resEntry);
+                    Persist(resList);
+                    break;
                 }
             }
-            Persist(resList);
         }
 
         // saves List of Reservation objs to .csv file  * doesnt currently work *
         public static void Persist(List<Reservation> resList)
         {
-            string path = "..\\..\\..\\..\\Resources\\res\\reservations.csv";
-            using (StreamWriter sw = new StreamWriter(path))
+            // Build path relative to the project's base directory
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string filePath = Path.Combine(projectDirectory, @"Resources\res\reservations.csv");
+
+            using (StreamWriter sw = new StreamWriter(filePath))
             {
-                foreach (Reservation reservation in resList)
+                foreach (Reservation resEntry in resList)
                 {
-                    sw.WriteLine(reservation);
+                    sw.WriteLine(resEntry.ToString());
                 }
             }
         }
