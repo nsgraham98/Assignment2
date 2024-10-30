@@ -90,9 +90,10 @@
             <h3>Flights</h3>
             @foreach (Flight flight in foundFlightList)
             {
-                <div>
+                @* <div>
                 <button type="button" @onclick="UpdateFields"><p @bind="flightButton">@Flight.DisplayFlight(flight)</p></button>
-                </div>
+                </div> *@
+            <p>@Flight.DisplayFlight(flight)</p>
             }
         </div>
 
@@ -225,10 +226,34 @@
 
     private void PassReservation()
     {
-        Flight foundFlight = Flight.GetFlightFromCode(flightCode);
-        string name = customerName;
-        string cit = citizenship;
-        ReservationManager.MakeReservation(foundFlight, name, cit);
+        try
+        {
+            Flight foundFlight = Flight.GetFlightFromCode(flightCode);
+            string name = customerName;
+            string cit = citizenship;
+            ReservationManager.MakeReservation(foundFlight, name, cit);
+        }
+        catch (FlightFullException e)
+        {
+
+        }
+        catch (FlightNullException e)
+        {
+
+        }
+        catch (NameNullException e)
+        {
+
+        }
+        catch (CitizenshipNullException e)
+        {
+
+        }
+        catch (Exception e)
+        {
+            
+        }
+
     }
 
     private void PassUpdateFields(ChangeEventArgs e)

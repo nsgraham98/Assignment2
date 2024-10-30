@@ -23,7 +23,7 @@ namespace Assignment2
             AirportName = airportName;
         }
 
-        // loads airports to list from an embedded (properties -> build action -> Embedded Resource) .csv file located in Resources/res/airports.csv
+        // loads airports to list from a .csv file located in Resources/res/airports.csv
         public static List<Airport> LoadAirports()
         {
             string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
@@ -36,7 +36,11 @@ namespace Assignment2
                 {
                     string line = reader.ReadLine();
                     string[] field = line.Split(',');
-                    Airport airport = new Airport(field[0], field[1]);
+
+                    string airportCode = field[0];
+                    string airportName = field[1];
+
+                    Airport airport = new Airport(airportCode, airportName);
                     airportsList.Add(airport);
                 }
                 return airportsList;

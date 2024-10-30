@@ -165,7 +165,24 @@
 
     private void PassModifyReservation()
     {
-        ReservationManager.ModifyReservation(reservationCode, customerName, citizenship, status);        
+        try
+        {
+            ReservationManager.ModifyReservation(reservationCode, customerName, citizenship, status);
+        }
+        catch (NameNullException e)
+        {
+
+        }
+        catch (CitizenshipNullException e)
+        {
+
+        }
+        catch (Exception e)
+        {
+
+        }
+         
+        
     }
 
     private void PassReservationFinder()
