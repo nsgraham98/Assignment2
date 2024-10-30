@@ -14,13 +14,28 @@ namespace Assignment2
         // Creates Reservation obj using input arguments, adds to List of all Reservation objs, passes List to Persist() which saves Reservation List to reservations.csv
         public static void MakeReservation(Flight flight, string customerName, string citizenship)
         {
+            if (flight.Seats <= 0)
+            {
+                throw new FlightFullException("Sorry, this flight is full.");
+            }
+            if (string.IsNullOrEmpty(flight.FlightCode))
+            {
+                throw new FlightNullException("No flight selected.");
+            }
+            if (string.IsNullOrEmpty(customerName))
+            {
+                throw new NameNullException("Name cannot be empty.");
+            }
+            if (string.IsNullOrEmpty(citizenship))
+            {
+                throw new CitizenshipNullException("Citizenship cannot be empty.");
+            }
+
             string status = "active";
             Reservation reservation = new Reservation(GenerateResCode(), flight, customerName, citizenship, status);
             List<Reservation> resList = LoadReservations();
             resList.Add(reservation);
             Persist(resList);
-            // exception is thrown if: flight is fully booked, flight is null, name is empty/null, citizenship is empty/null
-            // create Reservation object and saves to file
         }
 
         // loads all Reservation objs using LoadReservations(), checks if input arguments match existing Reservation obj, returns List of Reservation obj
@@ -53,9 +68,6 @@ namespace Assignment2
         // loads reservations to list from .csv file located in Resources/res/reservations.csv
         public static List<Reservation> LoadReservations()
         {
-            //Assembly assembly = Assembly.GetExecutingAssembly();
-            //string resourceName = "Assignment2.Resources.res.reservations.csv";
-            //Stream stream = assembly.GetManifestResourceStream(resourceName);
             string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
             string filePath = Path.Combine(projectDirectory, @"Resources\res\reservations.csv");
             using (StreamReader reader = new StreamReader(filePath))
@@ -66,31 +78,31 @@ namespace Assignment2
                 {
                     string line = reader.ReadLine();
                     string[] field = line.Split(",");
+
+                    string reservationCode = field[0];
+                    string flightCode = field[1];
+                    string airlineName = field[2];
                     Airport originAirport = Airport.LoadAirportFromCode(field[3]);
                     Airport destAirport = Airport.LoadAirportFromCode(field[4]);
-                    Flight flight = new Flight(field[1], field[2], originAirport, destAirport, field[5], field[6], Convert.ToInt16(field[7]), Convert.ToDouble(field[8]));
+                    string weekDate = field[5];
+                    string time = field[6];
+                    int seats = Convert.ToInt16(field[7]);
+                    double cost = Convert.ToDouble(field[8]);
 
-                    Reservation reservation = new Reservation(field[0], flight, field[9], field[10], (field[11]));
+                    Flight flight = new Flight(flightCode, airlineName, originAirport, destAirport, weekDate, time, seats, cost);
+
+                    string customerName = field[9];
+                    string citizenship = field[10];
+                    string status = field[11];
+                  
+                    Reservation reservation = new Reservation(reservationCode, flight, customerName, citizenship, status);
+
                     reservationsList.Add(reservation);
                 }
                 return reservationsList;
             }
         }
-        //string path = "..\\..\\..\\..\\Resources\\res\\reservations.csv";
-        //List<Reservation> list = new List<Reservation>();
-        //string[] lines = File.ReadAllLines(path);
-        //foreach (string line in lines)
-        //{
-        //string[] field = line.Split(",");
-        //Airport originAirport = Airport.LoadAirportFromCode(field[3]);
-        //Airport destAirport = Airport.LoadAirportFromCode(field[4]);
-        //Flight flight = new Flight(field[1], field[2], originAirport, destAirport, field[5], field[6], Convert.ToInt16(field[7]), Convert.ToDouble(field[8]));
 
-        //Reservation reservation = new Reservation(field[0], flight, field[10], field[11], (field[12]));
-        //list.Add(reservation);
-        //    //}
-        //    //return list;
-        //}
         public static string GenerateResCode()
         {
             Random random = new Random();
@@ -101,7 +113,16 @@ namespace Assignment2
 
 
         public static void ModifyReservation(string resCode, string customerName, string citizenship, string status)
-        {
+        {           
+            if (string.IsNullOrEmpty(customerName))
+            {
+                throw new NameNullException("Name cannot be empty.");
+            }
+            if (string.IsNullOrEmpty(citizenship))
+            {
+                throw new CitizenshipNullException("Citizenship cannot be empty.");
+            }
+
             List<Reservation> resList = LoadReservations();
             foreach (Reservation resEntry in resList)
             {

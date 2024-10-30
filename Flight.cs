@@ -43,18 +43,10 @@ namespace Assignment2
             List<Flight> foundFlights = new List<Flight>();
             foreach (Flight flight in flightList)
             {
-                if (originAirport.AirportCode == flight.OriginAirport.AirportCode & destAirport.AirportCode == flight.DestAirport.AirportCode & (weekDate == flight.WeekDate | weekDate == "Any"))
+                if (originAirport.AirportCode == flight.OriginAirport.AirportCode & destAirport.AirportCode == flight.DestAirport.AirportCode & (weekDate == flight.WeekDate || weekDate == "Any"))
                 {
                     foundFlights.Add(flight);
                 }
-                //if (destAirport == flight.DestAirport)
-                //{
-                //    foundFlights.Add(flight);
-                //}
-                //if (weekDate == flight.WeekDate)
-                //{
-                //    foundFlights.Add(flight);
-                //}
             }
             return foundFlights;
         }
