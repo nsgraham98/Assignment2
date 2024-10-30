@@ -20,6 +20,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <Nullable>enable</Nullable>
+		<WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize> <!--REMOVE THIS LINE IF MAUI APP BREAKS ON ANOTHER PC-->
 
         <!-- Display name -->
         <ApplicationTitle>Assignment2</ApplicationTitle>
