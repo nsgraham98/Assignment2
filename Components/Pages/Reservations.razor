@@ -91,10 +91,14 @@
 
 <div class="maincontent">
         <div class="reservations">
-            <h3>Reservations</h3>
+            <h3>Reservations</h3><br/>
+            <p>To modify existing reservation: Use our Reservation Finder to search for a reservation, then press "Select"</p>
             @foreach(Reservation res in foundResList)
             {
+                <div class="foundresdisplay">
                 <p>@Reservation.DisplayReservation(res)</p>
+                <button type="button" @onclick="() => UpdateFields(res)"></button>
+                </div>
             }
         
         </div>
@@ -103,16 +107,16 @@
             <form>
                 <h3>Update Reservation</h3>
                 <label for="code">Code:</label>
-                <input type="text" name="code" @bind="@reservationCode" /><br />
+                <input type="text" name="code" @bind="@reservationCode" readonly/><br />
 
                 <label for="flight">Flight:</label>
-            <input type="text" name="flight" @bind="@flightCode" /><br />
+            <input type="text" name="flight" @bind="@flightCode" readonly /><br />
 
                 <label for="airline">Airline:</label>
-            <input type="text" name="airline" @bind="@airlineName" /><br />
+            <input type="text" name="airline" @bind="@airlineName" readonly /><br />
 
                 <label for="cost">Cost:</label>
-            <input type="number" name="cost" @bind="@cost" /><br />
+            <input type="number" name="cost" @bind="@cost" readonly /><br />
 
                 <label for="name">Name:</label>
                 <input type="text" name="name" @bind="@customerName" /><br />
@@ -122,11 +126,12 @@
 
                 <label for="status">Status:</label>
             <select name="status" @bind="@status">
-                    <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                    <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
                 </select>
 
-            <button type="submit" @onclick="PassModifyReservation">Update</button>
+            <button type="button" @onclick="PassModifyReservation">Update</button>
+            <p>@reservationMessage</p>
             </form>            
         </div>
     <div class="flightfinder">
@@ -138,7 +143,22 @@
             </div>
             <div>
                 <label for="airline">Airline:</label>
-                <input type="text" name="airline" @bind="airlineNameFind"/><br />
+                <select name="airline" @bind="airlineNameFind">
+                    <option value="">Any</option>
+                    <option value="Try a Bus Airways">Try a Bus Airways</option>
+                    <option value="Scare Airlines">Scare Airlines</option>
+                    <option value="Always Late Airlines">Always Late Airlines</option>
+                    <option value="Sprawl Airways">Sprawl Airways</option>
+                    <option value="Mediocre Airlines">Mediocre Airlines</option>
+                    <option value="Conned Air">Conned Air</option>
+                    <option value="Otto Airlines">Otto Airlines</option>
+                    <option value="Gypped Air">Gypped Air</option>
+                    <option value="Error Canada">Error Canada</option>
+                    <option value="AirShaker">AirShaker</option>
+                    <option value="Vertical Airways">Vertical Airways</option>
+                    <option value="Scaretransat">Scaretransat</option>
+                </select>
+                @* <input type="text" name="airline" @bind="airlineNameFind"/><br /> *@
             </div>
             <div>
                 <label for="name">Name:</label>
@@ -163,26 +183,34 @@
     private string customerNameFind { get; set; }
     private List<Reservation> foundResList { get; set; } = new List<Reservation>();
 
+    private string reservationMessage { get; set; } = "";
+
     private void PassModifyReservation()
     {
         try
         {
             ReservationManager.ModifyReservation(reservationCode, customerName, citizenship, status);
+            reservationMessage = $"Reservation {reservationCode} Successfully Updated!";
+            PassReservationFinder();
+        }
+        catch (ResNotFoundException)
+        {
+            reservationMessage = $"Reservation {reservationCode} not found";
         }
         catch (NameNullException e)
         {
-
+            reservationMessage = e.Message;
         }
         catch (CitizenshipNullException e)
         {
-
+            reservationMessage = e.Message;
         }
         catch (Exception e)
         {
-
+            reservationMessage = "Something went wrong";
         }
-         
-        
+
+
     }
 
     private void PassReservationFinder()
@@ -190,23 +218,16 @@
         foundResList = ReservationManager.FindReservation(reservationCodeFind, airlineNameFind, customerNameFind);        
     }
 
-    // private void PassUpdateFields(ChangeEventArgs e)
-    // {
-    //     flightCode = e.Value.ToString();
-    //     UpdateFields();
-    // }
-
-    // private void UpdateFields()
-    // {
-    //     Reservation foundResPop = Reservation.FindReservation(flightCode, "", "");
-    //     if (foundFlightPop != null)
-    //     {
-    //         flightCode = found
-    //         airlineName = foundFlightPop.AirlineName;
-    //         weekDate = foundFlightPop.WeekDate;
-    //         time = foundFlightPop.Time;
-    //         cost = foundFlightPop.Cost;
-    //     }
-    // }
+    private void UpdateFields(Reservation r)
+    {
+        reservationCode = r.ReservationCode;
+        flightCode = r.Flight.FlightCode;
+        airlineName = r.Flight.AirlineName;
+        cost = r.Flight.Cost;
+        customerName = r.CustomerName;
+        citizenship = r.Citizenship;
+        status = r.Status;
+    }
 }
 
+ 

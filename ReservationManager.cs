@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
+using Blazorise.Extensions;
 
 
 namespace Assignment2
@@ -14,22 +15,22 @@ namespace Assignment2
         // Creates Reservation obj using input arguments, adds to List of all Reservation objs, passes List to Persist() which saves Reservation List to reservations.csv
         public static void MakeReservation(Flight flight, string customerName, string citizenship)
         {
-            if (flight.Seats <= 0)
+            if (FlightManager.GetFlightSeats(flight) <= 0)
             {
-                throw new FlightFullException("Sorry, this flight is full.");
+                throw new FlightFullException("Sorry, this flight is full");
             }
             if (string.IsNullOrEmpty(flight.FlightCode))
             {
-                throw new FlightNullException("No flight selected.");
+                throw new FlightNullException("No flight selected");
             }
-            if (string.IsNullOrEmpty(customerName))
+/*            if (string.IsNullOrEmpty(customerName))
             {
                 throw new NameNullException("Name cannot be empty.");
             }
             if (string.IsNullOrEmpty(citizenship))
             {
                 throw new CitizenshipNullException("Citizenship cannot be empty.");
-            }
+            }*/
 
             string status = "active";
             Reservation reservation = new Reservation(GenerateResCode(), flight, customerName, citizenship, status);
@@ -38,30 +39,38 @@ namespace Assignment2
             Persist(resList);
         }
 
+
         // loads all Reservation objs using LoadReservations(), checks if input arguments match existing Reservation obj, returns List of Reservation obj
         public static List<Reservation> FindReservation(string reservationCode, string airline, string customerName)
         {
             List<Reservation> resList = LoadReservations();
             List<Reservation> foundResList = new List<Reservation>();
+
+            if (string.IsNullOrEmpty(reservationCode) && string.IsNullOrEmpty(airline) && string.IsNullOrEmpty(customerName))
+            {
+                return resList;
+            }
+
             foreach (Reservation res in resList)
             {
                 if (reservationCode == res.ReservationCode)
                 {
                     foundResList.Add(res);
+                    continue;
                 }
                 if (airline == res.Flight.AirlineName)
                 {
                     foundResList.Add(res);
+                    continue;
                 }
                 if (customerName == res.CustomerName)
                 {
                     foundResList.Add(res);
+                    continue;
                 }
             }
             return foundResList;
-            // if all args are empty it returns every reservation
         }
-
         // needs mutator/setter to modify reservation mobjects
 
 
@@ -82,8 +91,8 @@ namespace Assignment2
                     string reservationCode = field[0];
                     string flightCode = field[1];
                     string airlineName = field[2];
-                    Airport originAirport = Airport.LoadAirportFromCode(field[3]);
-                    Airport destAirport = Airport.LoadAirportFromCode(field[4]);
+                    Airport originAirport = AirportManager.LoadAirportFromCode(field[3]);
+                    Airport destAirport = AirportManager.LoadAirportFromCode(field[4]);
                     string weekDate = field[5];
                     string time = field[6];
                     int seats = Convert.ToInt16(field[7]);
@@ -94,7 +103,7 @@ namespace Assignment2
                     string customerName = field[9];
                     string citizenship = field[10];
                     string status = field[11];
-                  
+
                     Reservation reservation = new Reservation(reservationCode, flight, customerName, citizenship, status);
 
                     reservationsList.Add(reservation);
@@ -113,42 +122,58 @@ namespace Assignment2
 
 
         public static void ModifyReservation(string resCode, string customerName, string citizenship, string status)
-        {           
-            if (string.IsNullOrEmpty(customerName))
+        {
+            bool found = false;
+/*            if (string.IsNullOrEmpty(customerName))
             {
-                throw new NameNullException("Name cannot be empty.");
+                throw new NameNullException("Name cannot be empty");
             }
             if (string.IsNullOrEmpty(citizenship))
             {
-                throw new CitizenshipNullException("Citizenship cannot be empty.");
-            }
+                throw new CitizenshipNullException("Citizenship cannot be empty");
+            }*/
 
             List<Reservation> resList = LoadReservations();
             foreach (Reservation resEntry in resList)
             {
-                if (resCode == resEntry.ReservationCode)
+                if (resCode == resEntry.ReservationCode & !found)
                 {
                     resList.Remove(resEntry);
                     if (customerName != resEntry.CustomerName)
                     {
                         resEntry.CustomerName = customerName;
                     }
+
                     if (status != resEntry.Status)
                     {
+                        if (status == "active")
+                        {
+                            int seats = FlightManager.GetFlightSeats(resEntry.Flight);
+                            if (seats <= 0)
+                            {
+                                throw new FlightFullException("Sorry, this flight is full.");
+                            }
+                        }
                         resEntry.Status = status;
                     }
+
                     if (citizenship != resEntry.Citizenship)
                     {
                         resEntry.Citizenship = citizenship;
                     }
                     resList.Add(resEntry);
+                    found = true;
                     Persist(resList);
                     break;
-                }
+                }          
+            }
+            if (!found)
+            {
+                throw new ResNotFoundException("Reservation not found");
             }
         }
 
-        // saves List of Reservation objs to .csv file  * doesnt currently work *
+        // saves List of Reservation objs to .csv file
         public static void Persist(List<Reservation> resList)
         {
             // Build path relative to the project's base directory
@@ -165,3 +190,4 @@ namespace Assignment2
         }
     }
 }
+

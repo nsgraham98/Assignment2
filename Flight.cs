@@ -36,72 +36,14 @@ namespace Assignment2
             Cost = cost;
         }
 
-        // returns list of Flight objects that match the input arguments
-        public static List<Flight> FindFlights(Airport originAirport, Airport destAirport, string weekDate)
+        public static string DisplayFlight(Flight f)
         {
-            List<Flight> flightList = LoadFlights();
-            List<Flight> foundFlights = new List<Flight>();
-            foreach (Flight flight in flightList)
-            {
-                if (originAirport.AirportCode == flight.OriginAirport.AirportCode & destAirport.AirportCode == flight.DestAirport.AirportCode & (weekDate == flight.WeekDate || weekDate == "Any"))
-                {
-                    foundFlights.Add(flight);
-                }
-            }
-            return foundFlights;
-        }
-
-
-        // loads flights to list from an embedded (properties -> build action -> Embedded Resource) .csv file located in Resources/res/flights.csv
-        public static List<Flight> LoadFlights()
-        {
-            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string filePath = Path.Combine(projectDirectory, @"Resources\res\flights.csv");
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                List<Flight> flightsList = new List<Flight>();
-
-                while (!reader.EndOfStream)
-                {
-                    string line = reader.ReadLine();
-                    string[] field = line.Split(",");
-                    Airport originAirport = Airport.LoadAirportFromCode(field[2]);
-                    Airport destAirport = Airport.LoadAirportFromCode(field[3]);
-                    Flight flight = new Flight(field[0], field[1], originAirport, destAirport, field[4], field[5], Convert.ToInt16(field[6]), Convert.ToDouble(field[7]));
-                    flightsList.Add(flight);
-                }
-                return flightsList;
-            }
-        }
-
-        // accepts string flightcode as argument, returns matching Flight object
-        public static Flight GetFlightFromCode(string flightcode)
-        {
-            if (flightcode != null)
-            {
-                List<Flight> list = LoadFlights();
-                foreach (Flight flight in list)
-                {
-                    if (flightcode == flight.FlightCode)
-                    { return flight; }
-                }
-            }
-            else
-            {
-                Flight noMatchFlightNull = new Flight();
-                return noMatchFlightNull;
-            }
-            Flight noMatchFlight = new Flight();
-            return noMatchFlight;
+            return $"Code: {f.FlightCode}, Airline: {f.AirlineName}, Departure: {f.OriginAirport.AirportCode}, Destination: {f.DestAirport.AirportCode}, Day: {f.WeekDate}, Time: {f.Time}, Seats: {f.Seats}, Price: ${f.Cost}";
         }
 
         public override string? ToString()
         {
             return $"{FlightCode},{AirlineName},{OriginAirport.AirportCode},{DestAirport.AirportCode},{WeekDate},{Time},{Seats},{Cost}";
-        }
-        public static string DisplayFlight(Flight f)
-        {
-            return $"Code: {f.FlightCode}, Airline: {f.AirlineName}, Departure: {f.OriginAirport.AirportCode}, Destination: {f.DestAirport.AirportCode}, Day: {f.WeekDate}, Time: {f.Time}, Seats: {f.Seats}, Price: ${f.Cost}";
         }
     }
 }

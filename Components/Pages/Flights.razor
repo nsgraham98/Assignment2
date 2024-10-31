@@ -87,13 +87,15 @@
 </style>
 <div class="maincontent">
         <div class="flights">
-            <h3>Flights</h3>
+            <h3>Flights</h3><br/>
+            <p>To create reservation: Use our Flight Finder to search for a flight, then press "Select"</p>
             @foreach (Flight flight in foundFlightList)
             {
-                @* <div>
-                <button type="button" @onclick="UpdateFields"><p @bind="flightButton">@Flight.DisplayFlight(flight)</p></button>
-                </div> *@
-            <p>@Flight.DisplayFlight(flight)</p>
+                <div class="foundflightdisplay">
+                <p>@Flight.DisplayFlight(flight)</p>
+                <button type="button" @onclick="() => UpdateFields(flight)"></button>
+                </div>
+            
             }
         </div>
 
@@ -101,7 +103,7 @@
             <form>
                 <h3>Reserve</h3>
                 <label for="flight">Flight:</label>
-                <input type="text" name="flight" @bind="flightCode" @oninput="PassUpdateFields"/><br />
+                <input type="text" name="flight" @bind="flightCode" readonly/><br />
 
                 <label for="airline">Airline:</label>
                 <input type="text" name="airline" @bind="@airlineName" readonly/><br />
@@ -121,7 +123,8 @@
                 <label for="citizenship">Citizenship:</label>
                 <input type="text" name="citizenship" @bind="@citizenship"/><br />
 
-                <button type="submit" @onclick="PassReservation">Reserve</button>
+                <button type="button" @onclick="PassReservation">Reserve</button><br/>
+                <p>@reservationMessage</p>
             </form>            
         </div>
     <div class="flightfinder">
@@ -216,69 +219,60 @@
 
     private Flight flightButton { get; set; }
 
+    private string reservationMessage { get; set; } = "";
+
     private void PassFlightFinder()
     {
-        Airport originAirport = Airport.LoadAirportFromCode(originAirportCode);
-        Airport destAirport = Airport.LoadAirportFromCode(destAirportCode);
+        Airport originAirport = AirportManager.LoadAirportFromCode(originAirportCode);
+        Airport destAirport = AirportManager.LoadAirportFromCode(destAirportCode);
         string weekDay = day;
-        foundFlightList = Flight.FindFlights(originAirport, destAirport, weekDay);
+        foundFlightList = FlightManager.FindFlights(originAirport, destAirport, weekDay);
     }
 
     private void PassReservation()
     {
         try
         {
-            Flight foundFlight = Flight.GetFlightFromCode(flightCode);
+            Flight foundFlight = FlightManager.GetFlightFromCode(flightCode);
             string name = customerName;
             string cit = citizenship;
             ReservationManager.MakeReservation(foundFlight, name, cit);
+            reservationMessage = "Reservation Successfully Created!";
+        }
+        catch (FlightNotFoundException e)
+        {
+            reservationMessage = $"Flight {flightCode} not found";
         }
         catch (FlightFullException e)
         {
-
+            reservationMessage = e.Message;
         }
         catch (FlightNullException e)
         {
-
+            reservationMessage = e.Message;
         }
         catch (NameNullException e)
         {
-
+            reservationMessage = e.Message;
         }
         catch (CitizenshipNullException e)
         {
-
+            reservationMessage = e.Message;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            
+            reservationMessage = "Something went wrong";
         }
 
     }
 
-    private void PassUpdateFields(ChangeEventArgs e)
+    private void UpdateFields(Flight f)
     {
-        flightCode = e.Value.ToString();
-        UpdateFields();
-    }
-
-    // private void UpdateFields()
-    // {       
-    //     Flight foundFlightPop = Flight.GetFlightFromCode(flightCode);
-    //     if (foundFlightPop != null)
-    //     {
-    //         airlineName = foundFlightPop.AirlineName;
-    //         weekDate = foundFlightPop.WeekDate;
-    //         time = foundFlightPop.Time;
-    //         cost = foundFlightPop.Cost;
-    //     }       
-    // }
-    private void UpdateFields()
-    {
-        airlineName = flightButton.AirlineName;
-        weekDate = flightButton.WeekDate;
-        time = flightButton.Time;
-        cost = flightButton.Cost;
+        flightCode = f.FlightCode;
+        airlineName = f.AirlineName;
+        weekDate = f.WeekDate;
+        time = f.Time;
+        cost = f.Cost;
     }
 
 }

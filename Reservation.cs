@@ -13,9 +13,29 @@ namespace Assignment2
 
         public string ReservationCode { get; set; }
         public Flight Flight { get; set; }
-        public string CustomerName { get; set; }
-        public string Citizenship { get; set; }
         public string Status { get; set; }
+
+        private string customerName;
+        public string CustomerName
+        {
+            get { return customerName; }
+            set
+            {
+                if (string.IsNullOrEmpty(value)) { throw new NameNullException("Name cannot be empty");}
+                else { customerName = value; }
+            }
+        }
+
+        private string citizenship;
+        public string Citizenship
+        {
+            get { return citizenship; }
+            set
+            {
+                if (string.IsNullOrEmpty(value)) { throw new CitizenshipNullException("Citizenship cannot be empty"); }
+                else { citizenship = value; }
+            }
+        }
 
         public Reservation(string reservationCode, Flight flight, string customerName, string citizenship, string status)
         {

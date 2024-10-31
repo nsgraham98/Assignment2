@@ -37,4 +37,20 @@ namespace Assignment2
             : base(message) { }
         public CitizenshipNullException(string message, Exception inner) : base(message, inner) { }
     }
+
+    public class FlightNotFoundException : Exception
+    {
+        public FlightNotFoundException() { }
+        public FlightNotFoundException(string message)
+            : base(message) { }
+        public FlightNotFoundException(string message, Exception inner) : base(message, inner) { }
+    }
+    public class ResNotFoundException : Exception
+    {
+        public ResNotFoundException() { }
+        public ResNotFoundException(string message)
+            : base(message) { }
+        public ResNotFoundException(string message, Exception inner) : base(message, inner) { }
+    }
+
 }
