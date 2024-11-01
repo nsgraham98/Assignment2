@@ -38,5 +38,6 @@ namespace Assignment2
             this.Cost = cost;
         }
 
+        
     }
 }

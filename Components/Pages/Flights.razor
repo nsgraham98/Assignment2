@@ -124,26 +124,45 @@
         <form>
             <div>
                 <label for="from">From:</label>
-                <select name="from">
-                    <option value="yyc">YYC</option>
+                <select name="from" @onchange="changeOriginAirport">
+                    <option disabled value="originAirport">Origin</option>
+                    @foreach (var originAirport in airports)
+                    {
+                        <option value="@originAirport.AirportCode">@originAirport.AirportCode</option>
+                    }
                 </select><br />
+                <p>origin: @selectedOriginAirport</p>
             </div>
 
             <div>
                 <label for="to">To:</label>
-                <select name="to">
-                    <option value="yyc">YYC</option>
+                <select name="to" @onchange="changeDestinationAirport">
+                    <option disabled value="destinationAirport">Destination</option>
+                    @foreach (var destAirport in airports)
+                    {
+                        <option value="@destAirport.AirportCode">@destAirport.AirportCode</option>
+                    }
                 </select><br />
+                <p>destination: @selectedDestinationAirport</p>
             </div>
 
             <div>
                 <label for="day">Day:</label>
-                <select name="day">
-                    <option value="any">Any</option>
+                <select name="day" @onchange="changeDay">
+                    <option disabled value="any">Day of the Week</option>
+                    @foreach (var day in dayOfWeek)
+                    {
+                        <option value="@day">@day</option>
+                    }
                 </select><br />
+                <p>day: @selectedDay</p>
             </div>
-
-            <button>Find Flights</button>
+            <p>TestList: @foreach(var @line in @searchflights)
+                {
+                    @line.AirlineName;
+                }
+            </p>
+            <button @onclick="getFlights">Find Flights</button>
         </form>
     </div>
 </div>
@@ -151,7 +170,47 @@
 
 @code {
     ReservationManager rm = new ReservationManager();
-    List<Flight> flights = ReservationManager.getFlights(); 
+    List<Flight> searchflights = ReservationManager.getFlights();
+    List<Airport> airports = ReservationManager.getAirports();
+    public static List<string> dayOfWeek = new List<string> { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
+    string selectedDay;
+    string selectedOriginAirport;
+    string selectedDestinationAirport;
+
+    void changeDay(ChangeEventArgs day)
+    {
+        selectedDay = day.Value.ToString();
+    }
+
+    void changeOriginAirport(ChangeEventArgs origin)
+    {
+        selectedOriginAirport = origin.Value.ToString();
+    }
+
+    void changeDestinationAirport(ChangeEventArgs dest)
+    {
+        selectedDestinationAirport = dest.Value.ToString();
+    }
+
+    void getFlights()
+    {
+        // ReservationManager.getFlights(selectedOriginAirport, selectedDestinationAirport, selectedDay);
+        List<Flight> searchflights = new List<Flight>();
+        foreach (Flight flight in searchflights)
+        {
+            if (flight.OriginAirport == selectedOriginAirport)
+            {
+                if (flight.DestinationAirport == selectedDestinationAirport)
+                {
+                    if (flight.WeekDate == selectedDay)
+                    {
+                        searchflights.Add(flight);
+                    }
+                }
+            }
+        }
+    }
 
     string reservationCode;
     string flightCode;
