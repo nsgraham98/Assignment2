@@ -82,6 +82,16 @@
         color: white;
         border-radius:5px;
     }
+    .selectionbutton
+    {
+        margin-bottom:20px;
+    }
+
+    .selectionstring 
+    {
+        border-top: solid black 2px;
+        padding-top:18px;
+    }
 
 
 </style>
@@ -92,8 +102,8 @@
             @foreach (Flight flight in foundFlightList)
             {
                 <div class="foundflightdisplay">
-                <p>@Flight.DisplayFlight(flight)</p>
-                <button type="button" @onclick="() => UpdateFields(flight)"></button>
+                <p class="selectionstring">@Flight.DisplayFlight(flight)</p>
+                <button class="selectionbutton"type="button" @onclick="() => UpdateFields(flight)">Select @flight.FlightCode</button><br/>
                 </div>
             
             }

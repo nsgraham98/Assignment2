@@ -87,6 +87,18 @@
         color: white;
         border-radius:5px;
     }
+
+    .selectionbutton 
+    {
+        margin-bottom: 20px;
+    }
+
+    .selectionstring 
+    {
+        border-top: solid black 2px;
+        padding-top: 18px;
+    }
+
 </style>
 
 <div class="maincontent">
@@ -96,8 +108,8 @@
             @foreach(Reservation res in foundResList)
             {
                 <div class="foundresdisplay">
-                <p>@Reservation.DisplayReservation(res)</p>
-                <button type="button" @onclick="() => UpdateFields(res)"></button>
+                <p class="selectionstring">@Reservation.DisplayReservation(res)</p>
+                <button class="selectionbutton" type="button" @onclick="() => UpdateFields(res)">Select @res.ReservationCode</button>
                 </div>
             }
         
