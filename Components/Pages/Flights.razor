@@ -102,7 +102,7 @@
             @foreach (Flight flight in foundFlightList)
             {
                 <div class="foundflightdisplay">
-                <p class="selectionstring">@Flight.DisplayFlight(flight)</p>
+                <p class="selectionstring">@FlightManager.DisplayFlight(flight)</p>
                 <button class="selectionbutton"type="button" @onclick="() => UpdateFields(flight)">Select @flight.FlightCode</button><br/>
                 </div>
             
@@ -231,6 +231,8 @@
 
     private string reservationMessage { get; set; } = "";
 
+
+    // Passes parameters to FlightManager.FindFlights function read from <input> boxes
     private void PassFlightFinder()
     {
         Airport originAirport = AirportManager.LoadAirportFromCode(originAirportCode);
@@ -239,6 +241,8 @@
         foundFlightList = FlightManager.FindFlights(originAirport, destAirport, weekDay);
     }
 
+    // Passes parameters to ReservationManager.MakeReservation function read from <input> boxes
+    // catches Exceptions and displays e.Message to reservationMessage
     private void PassReservation()
     {
         try
@@ -276,6 +280,8 @@
 
     }
 
+    // updates <input> fields after @onclick from found flight results
+    // requires Flight object as parameter
     private void UpdateFields(Flight f)
     {
         flightCode = f.FlightCode;

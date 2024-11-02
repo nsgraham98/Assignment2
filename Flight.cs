@@ -36,11 +36,6 @@ namespace Assignment2
             Cost = cost;
         }
 
-        public static string DisplayFlight(Flight f)
-        {
-            return $"Code: {f.FlightCode}, Airline: {f.AirlineName}, Departure: {f.OriginAirport.AirportCode}, Destination: {f.DestAirport.AirportCode}, Day: {f.WeekDate}, Time: {f.Time}, Seats: {f.Seats}, Price: ${f.Cost}";
-        }
-
         public override string? ToString()
         {
             return $"{FlightCode},{AirlineName},{OriginAirport.AirportCode},{DestAirport.AirportCode},{WeekDate},{Time},{Seats},{Cost}";

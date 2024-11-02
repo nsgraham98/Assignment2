@@ -8,7 +8,10 @@ namespace Assignment2
 {
     public abstract class FlightManager
     {
-        // loads flights to list from an embedded (properties -> build action -> Embedded Resource) .csv file located in Resources/res/flights.csv
+        // loads flights to list from a .csv file located in Resources/res/flights.csv
+
+        // Loop: Reads .csv line -> constructs Flight Object -> adds Object to List<Flight> flightsList -> repeat loop
+        // returns List<Flight> flightsList
         public static List<Flight> LoadFlights()
         {
             string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
@@ -30,7 +33,11 @@ namespace Assignment2
             }
         }
 
-        // returns list of Flight objects that match the input arguments
+        // returns list of Flight objects that correspond to input parameters
+
+        // gets List<Flight> of all flights from LoadFlights() function
+        // iterates through list, adding any corresponding flight to a new List<Flight> foundFlights
+        // returns List<Flight> foundFlights
         public static List<Flight> FindFlights(Airport originAirport, Airport destAirport, string weekDate)
         {
             List<Flight> flightList = LoadFlights();
@@ -44,7 +51,12 @@ namespace Assignment2
             }
             return foundFlights;
         }
+
         // accepts string flightcode as argument, returns matching Flight object
+
+        // gets List<Flight> of all flights from LoadFlights() function
+        // iterates through list, until finding corresponding flightCode to Flight.FlightCode
+        // returns corresponding Flight flight
         public static Flight GetFlightFromCode(string flightcode)
         {
             if (flightcode != null)
@@ -62,6 +74,12 @@ namespace Assignment2
             }
             throw new FlightNotFoundException("Flight not found.");
         }
+
+        // requires List<Flight> of all flight objects to save to .csv file
+
+        // Builds path relative to the project's base directory
+        // gets file path for flights.csv
+        // Loop: uses StreamWriter to write flightEntry.ToString() to file -> repeat loop
         public static void Persist(List<Flight> flightList)
         {
             // Build path relative to the project's base directory
@@ -76,18 +94,29 @@ namespace Assignment2
                 }
             }
         }
+
+        // Readable display of flight attributes for Find Flights Page -> requires Flight object as parameter
         public static string DisplayFlight(Flight f)
         {
-            return $"Code: {f.FlightCode}, Airline: {f.AirlineName}, Departure: {f.OriginAirport.AirportCode}, Destination: {f.DestAirport.AirportCode}, Day: {f.WeekDate}, Time: {f.Time}, Seats: {f.Seats}, Price: ${f.Cost}";
+            return $"Code: {f.FlightCode}, Airline: {f.AirlineName}, Departure: {f.OriginAirport.AirportCode}, Destination: {f.DestAirport.AirportCode}, Day: {f.WeekDate}, Time: {f.Time}, Seats: {GetFlightSeats(f)}, Price: ${f.Cost}";
         }
 
+        // used to return available seats on a flight
+
+        // requires Flight object as parameter
+        // gets List<Reservation> of all reservations from LoadReservations() function
+        // iterates through resList and checks if reservation is active and corresponds to the input flight Object
+        // decrements seats for every match
+        // returns seats
+
+        // done this way to avoid loading all 1000+ flights
         public static int GetFlightSeats(Flight flight)
         {
             int seats = flight.Seats;
             List<Reservation> resList = ReservationManager.LoadReservations();
             foreach (Reservation reservation in resList)
             {
-                if ((reservation.Flight == flight) && (reservation.Status == "active"))
+                if ((reservation.Flight.FlightCode == flight.FlightCode) && (reservation.Status == "active"))
                 {
                     seats--;
                 }

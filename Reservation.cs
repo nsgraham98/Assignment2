@@ -15,6 +15,7 @@ namespace Assignment2
         public Flight Flight { get; set; }
         public string Status { get; set; }
 
+        // validates CustomerName setter using NameNullException
         private string customerName;
         public string CustomerName
         {
@@ -26,6 +27,7 @@ namespace Assignment2
             }
         }
 
+        // validates Citizenship setter using CitizenshipNullException
         private string citizenship;
         public string Citizenship
         {

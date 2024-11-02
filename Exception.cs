@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assignment2
 {    
+    // called if trying to book/modify reservation while no seats are available on flight
     public class FlightFullException:Exception
     {
         public FlightFullException() { }
@@ -14,6 +15,7 @@ namespace Assignment2
         public FlightFullException(string message, Exception inner) : base(message, inner) { }
     }
 
+    // called if user inputted flight code is null
     public class FlightNullException : Exception
     {
         public FlightNullException() { }
@@ -22,6 +24,7 @@ namespace Assignment2
         public FlightNullException(string message, Exception inner) : base(message, inner) { }
     }
 
+    // called if user inputted name is empty or null
     public class NameNullException : Exception
     {
         public NameNullException() { }
@@ -30,6 +33,7 @@ namespace Assignment2
         public NameNullException(string message, Exception inner) : base(message, inner) { }
     }
 
+    // called if user inputted citizenship is empty or null
     public class CitizenshipNullException : Exception
     {
         public CitizenshipNullException() { }
@@ -38,6 +42,7 @@ namespace Assignment2
         public CitizenshipNullException(string message, Exception inner) : base(message, inner) { }
     }
 
+    // called if flightCode does not correspond to any existing flights
     public class FlightNotFoundException : Exception
     {
         public FlightNotFoundException() { }
@@ -45,6 +50,8 @@ namespace Assignment2
             : base(message) { }
         public FlightNotFoundException(string message, Exception inner) : base(message, inner) { }
     }
+
+    // called if reservationCode does not correspond to any existing reservation
     public class ResNotFoundException : Exception
     {
         public ResNotFoundException() { }

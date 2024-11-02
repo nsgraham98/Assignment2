@@ -73,7 +73,7 @@
         text-align:right;
         margin:50px;
     }
-    .flightfinder > form > div > input
+    .flightfinder > form > div > input,select
     {
         width:85%;
 /*         border-radius:5px; */
@@ -170,7 +170,6 @@
                     <option value="Vertical Airways">Vertical Airways</option>
                     <option value="Scaretransat">Scaretransat</option>
                 </select>
-                @* <input type="text" name="airline" @bind="airlineNameFind"/><br /> *@
             </div>
             <div>
                 <label for="name">Name:</label>
@@ -197,6 +196,9 @@
 
     private string reservationMessage { get; set; } = "";
 
+    // passes parameters to ReservationManager.ModifyReservation read from <input> fields
+    // calls PassReservationFinder to update <input> fields with updated information
+    // catches exceptions and displays e.Message through reservationMessage
     private void PassModifyReservation()
     {
         try
@@ -225,11 +227,14 @@
 
     }
 
+    // passes parameters to ReservationManager.FindReservation read from <input> fields
     private void PassReservationFinder()
     {
         foundResList = ReservationManager.FindReservation(reservationCodeFind, airlineNameFind, customerNameFind);        
     }
 
+    // updates <input> fields after @onclick from found resrvation results
+    // requires Reservation object as parameter
     private void UpdateFields(Reservation r)
     {
         reservationCode = r.ReservationCode;

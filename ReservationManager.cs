@@ -12,7 +12,14 @@ namespace Assignment2
 {
     public abstract class ReservationManager
     {
-        // Creates Reservation obj using input arguments, adds to List of all Reservation objs, passes List to Persist() which saves Reservation List to reservations.csv
+        // Creates Reservation obj using input arguments, saves to .csv file
+
+        // checks available seats and flightcode format -> throws Exceptions
+        // uses GenerateResCode to randomly generate Reservation Code
+        // creates Reservation object using input parameters and Reservation Code
+        // loads all Reservations to List<Reservation> using LoadReservations()
+        // adds created Reservation object to List
+        // Saves List to reservations.csv using Persist(resList)
         public static void MakeReservation(Flight flight, string customerName, string citizenship)
         {
             if (FlightManager.GetFlightSeats(flight) <= 0)
@@ -23,14 +30,6 @@ namespace Assignment2
             {
                 throw new FlightNullException("No flight selected");
             }
-/*            if (string.IsNullOrEmpty(customerName))
-            {
-                throw new NameNullException("Name cannot be empty.");
-            }
-            if (string.IsNullOrEmpty(citizenship))
-            {
-                throw new CitizenshipNullException("Citizenship cannot be empty.");
-            }*/
 
             string status = "active";
             Reservation reservation = new Reservation(GenerateResCode(), flight, customerName, citizenship, status);
@@ -39,8 +38,14 @@ namespace Assignment2
             Persist(resList);
         }
 
+        // finds all Reservations that corresponds to input parameters -> returns List<Reservation> of all found Reservations
 
-        // loads all Reservation objs using LoadReservations(), checks if input arguments match existing Reservation obj, returns List of Reservation obj
+        // loads all Reservations to List<Reservation> using LoadReservations()
+        // creates new empty List<Reservation> for found reservations
+        // if every parameter is null or empty, returns List of every reservation
+        // otherwise, iterates through list of all reservations
+        // adds any reservation to foundResList that matches search criteria
+        // returns foundResList
         public static List<Reservation> FindReservation(string reservationCode, string airline, string customerName)
         {
             List<Reservation> resList = LoadReservations();
@@ -71,10 +76,11 @@ namespace Assignment2
             }
             return foundResList;
         }
-        // needs mutator/setter to modify reservation mobjects
 
+        // loads reservations to list from a .csv file located in Resources/res/reservations.csv
 
-        // loads reservations to list from .csv file located in Resources/res/reservations.csv
+        // Loop: Reads .csv line -> constructs Reservation Object -> adds Object to List<Reservation> reservationsList -> repeat loop
+        // returns List<Reservation> reservationsList
         public static List<Reservation> LoadReservations()
         {
             string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
@@ -112,6 +118,8 @@ namespace Assignment2
             }
         }
 
+        // randomly generates reservationCode (L####)
+        // returns reservationCode 
         public static string GenerateResCode()
         {
             Random random = new Random();
@@ -120,18 +128,17 @@ namespace Assignment2
             return reservationCode;
         }
 
+        // finds Reservation corresponding to inputted reservationCode -> modifies Reservation -> saves back to reservations.csv
 
+        // loads all Reservations to List<Reservation> using LoadReservations()
+        // iterates through resList until Reservation object with corresponding reservationCode is found
+        // Reservation object is removed from list
+        // validates and sets attributes for found Reservation according to user inputted parameters 
+        // Adds Reservation object back to List
+        // saves List to reservations.csv using Persist(resList)
         public static void ModifyReservation(string resCode, string customerName, string citizenship, string status)
         {
             bool found = false;
-/*            if (string.IsNullOrEmpty(customerName))
-            {
-                throw new NameNullException("Name cannot be empty");
-            }
-            if (string.IsNullOrEmpty(citizenship))
-            {
-                throw new CitizenshipNullException("Citizenship cannot be empty");
-            }*/
 
             List<Reservation> resList = LoadReservations();
             foreach (Reservation resEntry in resList)
@@ -173,7 +180,11 @@ namespace Assignment2
             }
         }
 
-        // saves List of Reservation objs to .csv file
+        // requires List<Reservation> of all reservation objects to save to .csv file
+
+        // Builds path relative to the project's base directory
+        // gets file path for reservations.csv
+        // Loop: uses StreamWriter to write resEntry.ToString() to file -> repeat loop
         public static void Persist(List<Reservation> resList)
         {
             // Build path relative to the project's base directory
